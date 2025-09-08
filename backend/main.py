@@ -84,6 +84,7 @@ class UploadURL(BaseModel):
 class GenerateReq(BaseModel):
     material_id: str
     level: str = "beginner"  # beginner | intermediate | advanced
+    persona: str = "curious"  # curious | practical | analytical | custom
     num_questions: int = 5
 
 class AnswerReq(BaseModel):
@@ -113,7 +114,7 @@ def extract_text_from_url(url: str) -> str:
     text = " ".join(soup.get_text(separator=" ").split())
     return text
 
-def gemini_student_questions(context: str, level: str, n: int):
+def gemini_student_questions(context: str, level: str, persona: str, n: int):
     model = genai.GenerativeModel(GEMINI_MODEL)
     # レベルを日本語に変換
     level_map = {
@@ -123,10 +124,20 @@ def gemini_student_questions(context: str, level: str, n: int):
     }
     japanese_level = level_map.get(level, level)
     
+    # ペルソナに応じた学生の性格を設定
+    persona_descriptions = {
+        "curious": "好奇心旺盛で、常に「なぜ？」「どうして？」と質問し、深く理解したいタイプの学生",
+        "practical": "実践重視で、実際の応用や具体例を重視し、実用的な知識を求めるタイプの学生",
+        "analytical": "論理的な思考を好み、体系的に理解したいタイプの学生",
+        "custom": "ユーザーが指定した性格・特徴を持つ学生"
+    }
+    
+    student_persona = persona_descriptions.get(persona, persona_descriptions["curious"])
+    
     sys = (
-        f"あなたは好奇心旺盛な学生AIです。教材について{n}個の質問を生成してください。 "
+        f"あなたは{student_persona}です。教材について{n}個の質問を生成してください。 "
         f"レベル: {japanese_level}。 "
-        "各質問を新しい行に書いてください。Q1:, Q2: のように始めてください。 "
+        "あなたの性格に合った質問をしてください。各質問を新しい行に書いてください。Q1:, Q2: のように始めてください。 "
         "JSONやコードブロックは使わず、シンプルな質問文のみで日本語で回答してください。"
     )
     # safetyやJSON指定は Gemini 側の機能に合わせて調整可
@@ -202,12 +213,13 @@ async def generate_questions(req: GenerateReq, user=Depends(verify_jwt)):
     if not mat.exists or mat.to_dict().get("owner") != user["sub"]:
         raise HTTPException(404, "material not found")
     context = mat.to_dict()["content"]
-    questions = gemini_student_questions(context, req.level, req.num_questions)
+    questions = gemini_student_questions(context, req.level, req.persona, req.num_questions)
     sess = db.collection("sessions").document()
     sess.set({
         "owner": user["sub"],
         "material_id": req.material_id,
         "level": req.level,
+        "persona": req.persona,
         "questions": questions,
         "createdAt": firestore.SERVER_TIMESTAMP
     })

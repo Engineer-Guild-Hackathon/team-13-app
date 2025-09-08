@@ -1,0 +1,450 @@
+/* Global styles for theme switching */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body[data-theme="light"] {
+  background-color: white !important;
+  color: #333 !important;
+}
+
+body[data-theme="dark"] {
+  background-color: #1a1b1e !important;
+  color: #c1c2c5 !important;
+}
+
+#root {
+  min-height: 100vh;
+  transition: background-color 0.3s ease;
+}
+
+#root[data-theme="light"] {
+  background-color: white !important;
+}
+
+#root[data-theme="dark"] {
+  background-color: #1a1b1e !important;
+}
+
+/* Theme-aware container styles */
+.mantine-Container-root {
+  transition: background-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-Container-root {
+  background-color: white !important;
+}
+
+body[data-theme="dark"] .mantine-Container-root {
+  background-color: #1a1b1e !important;
+}
+
+/* Theme-aware text colors */
+.mantine-Text-root {
+  transition: color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-Text-root {
+  color: #333 !important;
+}
+
+body[data-theme="dark"] .mantine-Text-root {
+  color: #c1c2c5 !important;
+}
+
+body[data-theme="light"] .mantine-Text-dimmed {
+  color: #666 !important;
+}
+
+body[data-theme="dark"] .mantine-Text-dimmed {
+  color: #909296 !important;
+}
+
+/* Theme-aware card styles */
+.mantine-Card-root {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-Card-root {
+  background-color: white !important;
+  border: 1px solid #e9ecef !important;
+}
+
+body[data-theme="dark"] .mantine-Card-root {
+  background-color: #25262b !important;
+  border: 1px solid #373a40 !important;
+}
+
+/* Theme-aware navbar and header */
+.mantine-AppShell-navbar {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-AppShell-navbar {
+  background-color: white !important;
+  border-right: 1px solid #e9ecef !important;
+}
+
+body[data-theme="dark"] .mantine-AppShell-navbar {
+  background-color: #1a1b1e !important;
+  border-right: 1px solid #373a40 !important;
+}
+
+.mantine-AppShell-header {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-AppShell-header {
+  background-color: white !important;
+  border-bottom: 1px solid #e9ecef !important;
+}
+
+body[data-theme="dark"] .mantine-AppShell-header {
+  background-color: #1a1b1e !important;
+  border-bottom: 1px solid #373a40 !important;
+}
+
+.mantine-AppShell-main {
+  transition: background-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-AppShell-main {
+  background-color: white !important;
+}
+
+body[data-theme="dark"] .mantine-AppShell-main {
+  background-color: #1a1b1e !important;
+}
+
+/* Theme-aware navigation items */
+.mantine-NavLink-root {
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-NavLink-root {
+  color: #333 !important;
+}
+
+body[data-theme="dark"] .mantine-NavLink-root {
+  color: #c1c2c5 !important;
+}
+
+body[data-theme="light"] .mantine-NavLink-root:hover {
+  background-color: #f8f9fa !important;
+}
+
+body[data-theme="dark"] .mantine-NavLink-root:hover {
+  background-color: #2c2e33 !important;
+}
+
+body[data-theme="light"] .mantine-NavLink-root[data-active="true"] {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+}
+
+body[data-theme="dark"] .mantine-NavLink-root[data-active="true"] {
+  background-color: #1e3a8a !important;
+  color: #60a5fa !important;
+}
+
+/* Theme-aware alert colors */
+.mantine-Alert-root {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-Alert-root {
+  background-color: #f8f9fa !important;
+  border: 1px solid #e9ecef !important;
+}
+
+body[data-theme="dark"] .mantine-Alert-root {
+  background-color: #2c2e33 !important;
+  border: 1px solid #373a40 !important;
+}
+
+/* Theme-aware badges */
+.mantine-Badge-root {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-Badge-root {
+  background-color: #f8f9fa !important;
+  color: #333 !important;
+  border: 1px solid #e9ecef !important;
+}
+
+body[data-theme="dark"] .mantine-Badge-root {
+  background-color: #2c2e33 !important;
+  color: #c1c2c5 !important;
+  border: 1px solid #373a40 !important;
+}
+
+/* Theme-aware buttons */
+.mantine-Button-root {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-Button-root {
+  background-color: #1976d2 !important;
+  color: white !important;
+}
+
+body[data-theme="dark"] .mantine-Button-root {
+  background-color: #1976d2 !important;
+  color: white !important;
+}
+
+body[data-theme="light"] .mantine-Button-light {
+  background-color: #f8f9fa !important;
+  color: #333 !important;
+  border: 1px solid #e9ecef !important;
+}
+
+body[data-theme="dark"] .mantine-Button-light {
+  background-color: #2c2e33 !important;
+  color: #c1c2c5 !important;
+  border: 1px solid #373a40 !important;
+}
+
+/* Theme-aware form elements */
+.mantine-TextInput-input,
+.mantine-Textarea-input,
+.mantine-FileInput-input {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-TextInput-input,
+body[data-theme="light"] .mantine-Textarea-input,
+body[data-theme="light"] .mantine-FileInput-input {
+  background-color: white !important;
+  border: 1px solid #e9ecef !important;
+  color: #333 !important;
+}
+
+body[data-theme="dark"] .mantine-TextInput-input,
+body[data-theme="dark"] .mantine-Textarea-input,
+body[data-theme="dark"] .mantine-FileInput-input {
+  background-color: #25262b !important;
+  border: 1px solid #373a40 !important;
+  color: #c1c2c5 !important;
+}
+
+.mantine-TextInput-input:focus,
+.mantine-Textarea-input:focus,
+.mantine-FileInput-input:focus {
+  border-color: #1976d2 !important;
+  box-shadow: 0 0 0 1px #1976d2 !important;
+}
+
+/* Theme-aware progress bar */
+.mantine-Progress-root {
+  transition: background-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-Progress-root {
+  background-color: #f8f9fa !important;
+}
+
+body[data-theme="dark"] .mantine-Progress-root {
+  background-color: #2c2e33 !important;
+}
+
+.mantine-Progress-bar {
+  background-color: #1976d2 !important;
+}
+
+/* Theme-aware segmented control */
+.mantine-SegmentedControl-root {
+  transition: background-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-SegmentedControl-root {
+  background-color: #f8f9fa !important;
+}
+
+body[data-theme="dark"] .mantine-SegmentedControl-root {
+  background-color: #2c2e33 !important;
+}
+
+.mantine-SegmentedControl-control {
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-SegmentedControl-control {
+  color: #333 !important;
+}
+
+body[data-theme="dark"] .mantine-SegmentedControl-control {
+  color: #c1c2c5 !important;
+}
+
+body[data-theme="light"] .mantine-SegmentedControl-control[data-active="true"] {
+  background-color: white !important;
+  color: #1976d2 !important;
+}
+
+body[data-theme="dark"] .mantine-SegmentedControl-control[data-active="true"] {
+  background-color: #1a1b1e !important;
+  color: #60a5fa !important;
+}
+
+/* Theme-aware select dropdown */
+.mantine-Select-input {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-Select-input {
+  background-color: white !important;
+  border: 1px solid #e9ecef !important;
+  color: #333 !important;
+}
+
+body[data-theme="dark"] .mantine-Select-input {
+  background-color: #25262b !important;
+  border: 1px solid #373a40 !important;
+  color: #c1c2c5 !important;
+}
+
+.mantine-Select-dropdown {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-Select-dropdown {
+  background-color: white !important;
+  border: 1px solid #e9ecef !important;
+}
+
+body[data-theme="dark"] .mantine-Select-dropdown {
+  background-color: #25262b !important;
+  border: 1px solid #373a40 !important;
+}
+
+.mantine-Select-option {
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-Select-option {
+  color: #333 !important;
+}
+
+body[data-theme="dark"] .mantine-Select-option {
+  color: #c1c2c5 !important;
+}
+
+body[data-theme="light"] .mantine-Select-option:hover {
+  background-color: #f8f9fa !important;
+}
+
+body[data-theme="dark"] .mantine-Select-option:hover {
+  background-color: #2c2e33 !important;
+}
+
+/* Theme-aware paper components */
+.mantine-Paper-root {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-Paper-root {
+  background-color: white !important;
+  border: 1px solid #e9ecef !important;
+}
+
+body[data-theme="dark"] .mantine-Paper-root {
+  background-color: #25262b !important;
+  border: 1px solid #373a40 !important;
+}
+
+/* Theme-aware theme icons */
+.mantine-ThemeIcon-root {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-ThemeIcon-root {
+  background-color: #f8f9fa !important;
+  color: #333 !important;
+}
+
+body[data-theme="dark"] .mantine-ThemeIcon-root {
+  background-color: #2c2e33 !important;
+  color: #c1c2c5 !important;
+}
+
+/* Theme-aware dividers */
+.mantine-Divider-root {
+  transition: border-color 0.3s ease;
+}
+
+body[data-theme="light"] .mantine-Divider-root {
+  border-color: #e9ecef !important;
+}
+
+body[data-theme="dark"] .mantine-Divider-root {
+  border-color: #373a40 !important;
+}
+
+/* Theme-aware loader */
+.mantine-Loader-root {
+  color: #1976d2 !important;
+}
+
+/* Force black text for utility navigation items in both themes */
+.mantine-NavLink-root .mantine-Text-root {
+  color: #333 !important;
+}
+
+/* More specific selector for utility items */
+.mantine-NavLink-root[data-utility-item] .mantine-Text-root {
+  color: #333 !important;
+}
+
+/* Even more specific for the utility section */
+.mantine-AppShell-navbar .mantine-NavLink-root .mantine-Text-root {
+  color: #333 !important;
+}
+
+/* Main navigation items - white text in dark mode, black in light mode */
+body[data-theme="light"] .mantine-AppShell-navbar .mantine-NavLink-root:not([data-utility-item]) .mantine-Text-root {
+  color: #333 !important;
+}
+
+body[data-theme="dark"] .mantine-AppShell-navbar .mantine-NavLink-root:not([data-utility-item]) .mantine-Text-root {
+  color: #ffffff !important;
+}
+
+/* Utility items - always black in both themes */
+body[data-theme="light"] .mantine-NavLink-root[data-utility-item] .mantine-Text-root,
+body[data-theme="dark"] .mantine-NavLink-root[data-utility-item] .mantine-Text-root {
+  color: #333 !important;
+}
+
+/* Utility items hover effects - more specific selectors */
+.mantine-AppShell-navbar .mantine-NavLink-root[data-utility-item="blue"]:hover {
+  background-color: var(--mantine-color-blue-0) !important;
+  border: 1px solid var(--mantine-color-blue-2) !important;
+}
+
+.mantine-AppShell-navbar .mantine-NavLink-root[data-utility-item="orange"]:hover {
+  background-color: var(--mantine-color-orange-0) !important;
+  border: 1px solid var(--mantine-color-orange-2) !important;
+}
+
+.mantine-AppShell-navbar .mantine-NavLink-root[data-utility-item="violet"]:hover {
+  background-color: var(--mantine-color-violet-0) !important;
+  border: 1px solid var(--mantine-color-violet-2) !important;
+}
+
+/* Dark mode hover effects */
+body[data-theme="dark"] .mantine-AppShell-navbar .mantine-NavLink-root[data-utility-item="blue"]:hover {
+  background-color: #1e3a8a !important;
+  border: 1px solid #3b82f6 !important;
+}
+
+body[data-theme="dark"] .mantine-AppShell-navbar .mantine-NavLink-root[data-utility-item="orange"]:hover {
+  background-color: #9a3412 !important;
+  border: 1px solid #ea580c !important;
+}
+
+body[data-theme="dark"] .mantine-AppShell-navbar .mantine-NavLink-root[data-utility-item="violet"]:hover {
+  background-color: #6b21a8 !important;
+  border: 1px solid #a855f7 !important;
+}

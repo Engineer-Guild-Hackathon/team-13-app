@@ -1,12 +1,19 @@
 {
-  "name": "you_teach",
+  "name": "uteach-monorepo",
   "version": "0.1.0",
   "private": true,
+  "description": "UTeach - AI-Powered Teaching Assistant (Monorepo)",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && source venv/bin/activate && uvicorn main_simple:app --reload --port 8787 --host 0.0.0.0",
+    "dev:all": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "cd backend && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt",
+    "install:all": "npm run install:frontend && npm run install:backend"
   },
   "dependencies": {
     "react": "19.1.0",
@@ -22,6 +29,7 @@
     "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
-    "@eslint/eslintrc": "^3"
+    "@eslint/eslintrc": "^3",
+    "concurrently": "^8.2.2"
   }
 }

@@ -6,6 +6,8 @@ import Upload from "./pages/Upload";
 import Teach from "./pages/Teach";
 import History from "./pages/History";
 import Login from "./pages/Login";
+import { Text, Title } from "@mantine/core";
+
 
 export default function App() {
   const [opened, { toggle, close }] = useDisclosure();
@@ -31,7 +33,9 @@ export default function App() {
       <AppShell.Header>
         <Group h="100%" px="md">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <b>UTeach</b>
+          <Text size="xl" fw={900}>
+            UTeach
+          </Text>
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">

@@ -189,8 +189,16 @@ async def upload_url(body: UploadURL):
     try:
         text = extract_text_from_url(body.url)
         material_id = f"url_{int(time.time())}"
+        # タイトルを適切に設定
+        title = body.title
+        if not title:
+            # URLからドメイン名を抽出してタイトルとして使用
+            from urllib.parse import urlparse
+            parsed_url = urlparse(body.url)
+            title = f"{parsed_url.netloc} - {parsed_url.path.split('/')[-1] or 'ページ'}"
+        
         materials_storage[material_id] = {
-            "title": body.title or body.url,
+            "title": title,
             "content": text,
             "type": "url"
         }
@@ -252,14 +260,23 @@ async def submit_answer(req: AnswerReq):
 
 @app.get("/history")
 async def history():
+    # レベルを日本語に変換
+    level_map = {
+        "beginner": "初級",
+        "intermediate": "中級", 
+        "advanced": "上級"
+    }
+    
     # セッション情報を返す（簡易版）
     sessions = []
     for session_id, session_data in sessions_storage.items():
+        japanese_level = level_map.get(session_data["level"], session_data["level"])
         sessions.append({
             "session_id": session_id,
+            "material_id": session_data["material_id"],
             "material_title": session_data["material_title"],
-            "level": session_data["level"],
-            "questions_count": len(session_data["questions"]),
+            "level": japanese_level,
+            "questions": session_data["questions"],
             "created_at": session_data["created_at"]
         })
     

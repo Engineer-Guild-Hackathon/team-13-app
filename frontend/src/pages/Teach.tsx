@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Card, Group, Stack, Text, Textarea, Title, Badge, Paper } from "@mantine/core";
+import { Button, Card, Group, Stack, Text, Textarea, Title, Badge, Paper, Loader, Center } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import Guard from "../components/Guard";
 import { useApi } from "../lib/api";
@@ -16,6 +16,7 @@ export default function Teach() {
   const [feedback, setFeedback] = useState<null | {
     score: number; strengths: string[]; suggestions: string[]; model_answer: string;
   }>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Load questions from localStorage as per SpecKit requirements
@@ -31,12 +32,16 @@ export default function Teach() {
 
   const submit = async () => {
     if (!sessionId || !selected) return;
+    setIsLoading(true);
+    setFeedback(null); // 前のフィードバックをクリア
     try {
       const res = await api.submitAnswer(sessionId, selected.id, answer);
       setFeedback(res.feedback);
       notifications.show({ color: "green", message: "フィードバックを受信しました" });
     } catch (e: any) {
       notifications.show({ color: "red", message: e?.message ?? "送信失敗" });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -55,7 +60,11 @@ export default function Teach() {
               <Card
                 key={q.id}
                 withBorder
-                onClick={() => setSelected(q)}
+                onClick={() => {
+                  setSelected(q);
+                  setFeedback(null); // フィードバックをクリア
+                  setIsLoading(false); // ローディング状態をリセット
+                }}
                 style={{ cursor: "pointer", borderColor: selected?.id === q.id ? "var(--mantine-color-blue-6)" : undefined }}
               >
                 <Text>{q.question}</Text>
@@ -73,9 +82,31 @@ export default function Teach() {
                 onChange={(e) => setAnswer(e.currentTarget.value)}
               />
               <Group justify="end" mt="sm">
-                <Button onClick={submit} disabled={!canSubmit}>送信</Button>
+                <Button 
+                  onClick={submit} 
+                  disabled={!canSubmit || isLoading}
+                  loading={isLoading}
+                >
+                  {isLoading ? "評価中..." : "送信"}
+                </Button>
               </Group>
             </Card>
+
+            {isLoading && (
+              <Card withBorder>
+                <Center p="xl">
+                  <Stack align="center" gap="md">
+                    <Loader size="lg" color="blue" />
+                    <Text size="lg" fw={500} c="blue">
+                      AIが回答を評価中です...
+                    </Text>
+                    <Text size="sm" c="dimmed">
+                      しばらくお待ちください
+                    </Text>
+                  </Stack>
+                </Center>
+              </Card>
+            )}
 
             {feedback && (
               <Card withBorder>

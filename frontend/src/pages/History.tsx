@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 export default function History() {
   const api = useApi();
   const [sessions, setSessions] = useState<
-    { session_id: string; material_id: string; level: string; questions: { id: string; question: string }[] }[]
+    { session_id: string; material_id: string; material_title: string; level: string; questions: { id: string; question: string }[] }[]
   >([]);
 
   useEffect(() => {
@@ -23,8 +23,8 @@ export default function History() {
           <Card key={s.session_id} withBorder>
             <Group justify="space-between">
               <Group>
-                <Badge>{s.level}</Badge>
-                <Text>Material: {s.material_id}</Text>
+                <Badge color="blue">{s.level}</Badge>
+                <Text fw={500} size="lg">{s.material_title}</Text>
               </Group>
               <Button component={Link} to={`/teach/${s.session_id}`} variant="light">再開</Button>
             </Group>

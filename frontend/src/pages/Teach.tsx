@@ -171,14 +171,6 @@ export default function Teach() {
                       <Title order={3}>先生の回答</Title>
                     </Group>
                     
-                    {selected && (
-                      <Alert color="blue" variant="light">
-                        <Text size="sm" fw={500}>
-                          質問: {selected.question}
-                        </Text>
-                      </Alert>
-                    )}
-                    
                     <Textarea
                       autosize 
                       minRows={8}
@@ -227,7 +219,7 @@ export default function Teach() {
                           <ThemeIcon size="md" radius="xl" variant="gradient" gradient={{ from: 'orange', to: 'red' }}>
                             <IconStar size={16} />
                           </ThemeIcon>
-                          <Title order={4}>📊 AI フィードバック</Title>
+                          <Title order={4}>AI フィードバック</Title>
                         </Group>
                         <Badge 
                           size="lg"
@@ -275,7 +267,7 @@ export default function Teach() {
                               <Stack gap="xs">
                                 <Group gap="xs">
                                   <IconMessageCircle size={16} color="var(--mantine-color-blue-6)" />
-                                  <Text fw={600} c="blue" size="sm">💡 改善提案</Text>
+                                  <Text fw={600} c="blue" size="sm">改善提案</Text>
                                 </Group>
                                 <Stack gap="xs">
                                   {feedback.suggestions.slice(0, 2).map((suggestion, i) => (
@@ -300,7 +292,7 @@ export default function Teach() {
                           <Stack gap="xs">
                             <Group gap="xs">
                               <IconStar size={16} color="var(--mantine-color-violet-6)" />
-                              <Text fw={600} c="violet" size="sm">🌟 模範解答</Text>
+                              <Text fw={600} c="violet" size="sm">模範解答</Text>
                             </Group>
                             <Text size="xs" c="violet.8" lineClamp={3}>
                               {feedback.model_answer}

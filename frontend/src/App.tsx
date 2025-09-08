@@ -1,4 +1,4 @@
-import { AppShell, Burger, Button, Group, NavLink, Stack, ThemeIcon, Badge, Divider, ActionIcon } from "@mantine/core";
+import { Image, AppShell, Burger, Button, Group, NavLink, Stack, ThemeIcon, Badge, Divider, ActionIcon } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
@@ -86,11 +86,22 @@ export default function App() {
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
           <Group>
+          
             <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
             <Group gap="xs" align="center">
-              <Text size="xl" fw={1600} c="blue.7">
-                UTeach
-              </Text>
+            <Image src="/logo.png" w={32} h={32} radius="sm" />
+            <Text
+            size="5xl"
+            fw={1600}
+            variant="gradient"
+            gradient={{ from: "blue", to: "red", deg: 90 }}
+            style={{
+            textShadow: "1px 1px 2px rgba(0,0,0,0.25)",
+            fontSize: 30 
+  }}
+>
+  UTeach
+</Text>
             </Group>
           </Group>
           <Group gap="sm">

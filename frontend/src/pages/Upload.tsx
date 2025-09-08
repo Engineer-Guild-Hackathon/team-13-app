@@ -64,7 +64,9 @@ export default function Upload() {
       setMaterialId(res.material_id);
       notifications.show({ color: "green", message: `PDF 取り込み完了 (${res.chars} chars)` });
     } catch (e: any) {
-      notifications.show({ color: "red", message: e?.message ?? "PDF 取り込み失敗" });
+      console.error('PDF upload error:', e);
+      const errorMessage = e?.response?.data?.detail || e?.message || "PDF 取り込み失敗";
+      notifications.show({ color: "red", message: errorMessage });
     } finally {
       setIsUploadingPdf(false);
     }
@@ -82,7 +84,9 @@ export default function Upload() {
       setMaterialId(res.material_id);
       notifications.show({ color: "green", message: `URL 取り込み完了 (${res.chars} chars)` });
     } catch (e: any) {
-      notifications.show({ color: "red", message: e?.message ?? "URL 取り込み失敗" });
+      console.error('URL upload error:', e);
+      const errorMessage = e?.response?.data?.detail || e?.message || "URL 取り込み失敗";
+      notifications.show({ color: "red", message: errorMessage });
     } finally {
       setIsUploadingUrl(false);
     }
@@ -113,7 +117,9 @@ export default function Upload() {
       }));
       window.location.href = `/teach/${res.session_id}`;
     } catch (e: any) {
-      notifications.show({ color: "red", message: e?.message ?? "質問生成に失敗しました" });
+      console.error('Question generation error:', e);
+      const errorMessage = e?.response?.data?.detail || e?.message || "質問生成に失敗しました";
+      notifications.show({ color: "red", message: errorMessage });
     } finally {
       setIsGenerating(false);
     }

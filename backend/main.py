@@ -115,7 +115,8 @@ def extract_text_from_url(url: str) -> str:
     return text
 
 def gemini_student_questions(context: str, level: str, persona: str, n: int):
-    model = genai.GenerativeModel(GEMINI_MODEL)
+    try:
+        model = genai.GenerativeModel(GEMINI_MODEL)
     # レベルを日本語に変換
     level_map = {
         "beginner": "初級",

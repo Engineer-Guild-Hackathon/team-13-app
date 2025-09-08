@@ -10,16 +10,15 @@ import "./globals.css";
 import App from "./App";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
-const domain = import.meta.env.VITE_AUTH0_DOMAIN as string;
-const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID as string;
-const audience = import.meta.env.VITE_AUTH0_AUDIENCE as string;
+const domain = import.meta.env.VITE_AUTH0_DOMAIN || "dev-dummy.auth0.com";
+const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID || "dummy-client-id";
+const audience = import.meta.env.VITE_AUTH0_AUDIENCE || "https://api.uteach";
 
 const AppWithTheme = () => {
   const { theme } = useTheme();
 
   return (
     <MantineProvider 
-      key={theme}
       defaultColorScheme={theme}
       theme={{
         primaryColor: 'blue',

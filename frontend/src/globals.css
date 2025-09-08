@@ -417,6 +417,101 @@ body[data-theme="dark"] .mantine-NavLink-root[data-utility-item] .mantine-Text-r
   color: #333 !important;
 }
 
+/* Main navigation items hover effects - color-specific */
+.mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color]:hover {
+  transition: all 0.2s ease !important;
+}
+
+/* Blue navigation item background hover */
+.mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="blue"]:hover {
+  background-color: var(--mantine-color-blue-0) !important;
+  border-color: var(--mantine-color-blue-2) !important;
+}
+
+/* Green navigation item background hover */
+.mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="green"]:hover {
+  background-color: var(--mantine-color-green-0) !important;
+  border-color: var(--mantine-color-green-2) !important;
+}
+
+/* Orange navigation item background hover */
+.mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="orange"]:hover {
+  background-color: var(--mantine-color-orange-0) !important;
+  border-color: var(--mantine-color-orange-2) !important;
+}
+
+/* Violet navigation item background hover */
+.mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="violet"]:hover {
+  background-color: var(--mantine-color-violet-0) !important;
+  border-color: var(--mantine-color-violet-2) !important;
+}
+
+/* Dark mode navigation item background hover */
+body[data-theme="dark"] .mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="blue"]:hover {
+  background-color: #1e3a8a !important;
+  border-color: #3b82f6 !important;
+}
+
+body[data-theme="dark"] .mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="green"]:hover {
+  background-color: #14532d !important;
+  border-color: #22c55e !important;
+}
+
+body[data-theme="dark"] .mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="orange"]:hover {
+  background-color: #9a3412 !important;
+  border-color: #ea580c !important;
+}
+
+body[data-theme="dark"] .mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="violet"]:hover {
+  background-color: #6b21a8 !important;
+  border-color: #a855f7 !important;
+}
+
+/* Blue navigation items */
+.mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="blue"]:hover .mantine-ThemeIcon-root[data-icon-color="blue"] {
+  background-color: var(--mantine-color-blue-1) !important;
+  transform: scale(1.05);
+  transition: all 0.2s ease !important;
+}
+
+/* Green navigation items */
+.mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="green"]:hover .mantine-ThemeIcon-root[data-icon-color="green"] {
+  background-color: var(--mantine-color-green-1) !important;
+  transform: scale(1.05);
+  transition: all 0.2s ease !important;
+}
+
+/* Orange navigation items */
+.mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="orange"]:hover .mantine-ThemeIcon-root[data-icon-color="orange"] {
+  background-color: var(--mantine-color-orange-1) !important;
+  transform: scale(1.05);
+  transition: all 0.2s ease !important;
+}
+
+/* Violet navigation items */
+.mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="violet"]:hover .mantine-ThemeIcon-root[data-icon-color="violet"] {
+  background-color: var(--mantine-color-violet-1) !important;
+  transform: scale(1.05);
+  transition: all 0.2s ease !important;
+}
+
+/* Dark mode hover effects for main navigation */
+body[data-theme="dark"] .mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="blue"]:hover .mantine-ThemeIcon-root[data-icon-color="blue"] {
+  background-color: #1e3a8a !important;
+}
+
+body[data-theme="dark"] .mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="green"]:hover .mantine-ThemeIcon-root[data-icon-color="green"] {
+  background-color: #14532d !important;
+}
+
+body[data-theme="dark"] .mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="orange"]:hover .mantine-ThemeIcon-root[data-icon-color="orange"] {
+  background-color: #9a3412 !important;
+}
+
+body[data-theme="dark"] .mantine-AppShell-navbar .mantine-NavLink-root[data-nav-color="violet"]:hover .mantine-ThemeIcon-root[data-icon-color="violet"] {
+  background-color: #6b21a8 !important;
+}
+
 /* Utility items hover effects - more specific selectors */
 .mantine-AppShell-navbar .mantine-NavLink-root[data-utility-item="blue"]:hover {
   background-color: var(--mantine-color-blue-0) !important;

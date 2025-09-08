@@ -164,9 +164,14 @@ def gemini_student_questions(context: str, level: str, persona: str, n: int):
         result.append({"id": f"q{i+1}", "question": q})
     
     return result
+    except Exception as e:
+        print(f"Gemini API error in gemini_student_questions: {e}")
+        # Gemini APIエラーの場合のフォールバック
+        return [{"id": f"q{i+1}", "question": f"教材の内容について質問{i+1}"} for i in range(n)]
 
 def gemini_teacher_feedback(question: str, answer: str, context: str):
-    model = genai.GenerativeModel(GEMINI_MODEL)
+    try:
+        model = genai.GenerativeModel(GEMINI_MODEL)
     sys = (
         "あなたは教育アシスタントです。先生の学生への説明を評価してください。 "
         "以下のJSON形式でのみで日本語で回答してください: {\"score\":0-100,\"strengths\":[],\"suggestions\":[],\"model_answer\":\"...\"}。"
@@ -177,6 +182,15 @@ def gemini_teacher_feedback(question: str, answer: str, context: str):
         return json.loads(resp.text)
     except Exception:
         return {"score": 70, "strengths": [], "suggestions": [resp.text[:500]], "model_answer": ""}
+    except Exception as e:
+        print(f"Gemini API error in gemini_teacher_feedback: {e}")
+        # Gemini APIエラーの場合のフォールバック
+        return {
+            "score": 70, 
+            "strengths": ["回答をいただきありがとうございます"], 
+            "suggestions": ["Gemini APIの制限により詳細な評価ができません。しばらく時間をおいてから再度お試しください。"], 
+            "model_answer": "申し訳ございませんが、現在APIの制限により詳細な回答を生成できません。"
+        }
 
 # --- エンドポイント ---
 

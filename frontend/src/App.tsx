@@ -89,7 +89,7 @@ export default function App() {
           
             <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
             <Group gap="xs" align="center">
-            <Image src="/logo.png" w={32} h={32} radius="sm" />
+            <Image src="logo.png" w={32} h={32} radius="sm" />
             <Text
             size="5xl"
             fw={1600}
@@ -143,6 +143,7 @@ export default function App() {
                 to={link.to}
                 onClick={close}
                 active={isActive}
+                data-nav-color={link.color}
                 label={
                   <Group gap="sm" align="center">
                     <ThemeIcon 
@@ -151,6 +152,7 @@ export default function App() {
                       variant={isActive ? "gradient" : "light"}
                       gradient={isActive ? { from: link.color, to: `${link.color}.4` } : undefined}
                       color={isActive ? undefined : link.color}
+                      data-icon-color={link.color}
                     >
                       <Icon size={18} />
                     </ThemeIcon>

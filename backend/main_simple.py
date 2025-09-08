@@ -10,7 +10,7 @@ import os, json, time
 
 # --- Gemini ---
 import google.generativeai as genai
-genai.configure(api_key=os.getenv("GEMINI_API_KEY", "AIzaSyDqfA1Jn7J6ijvs3gRGgh1ZSaGFNF_EqCM"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY", "AIzaSyAi5T8LRfBoIBH3k6q_0_aRYlMIU2P2kbQ"))
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
 
 # --- FastAPI ---

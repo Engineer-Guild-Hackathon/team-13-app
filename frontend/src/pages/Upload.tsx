@@ -118,7 +118,13 @@ export default function Upload() {
       window.location.href = `/teach/${res.session_id}`;
     } catch (e: any) {
       console.error('Question generation error:', e);
-      const errorMessage = e?.response?.data?.detail || e?.message || "質問生成に失敗しました";
+      let errorMessage = e?.response?.data?.detail || e?.message || "質問生成に失敗しました";
+      
+      // Gemini APIのクォータ制限エラーの場合
+      if (errorMessage.includes("quota") || errorMessage.includes("rate") || errorMessage.includes("limit")) {
+        errorMessage = "Gemini APIの1日あたりの使用制限に達しました。24時間後に再度お試しください。";
+      }
+      
       notifications.show({ color: "red", message: errorMessage });
     } finally {
       setIsGenerating(false);

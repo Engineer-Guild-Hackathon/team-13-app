@@ -127,7 +127,7 @@ def gemini_student_questions(context: str, level: str, n: int):
         f"あなたは好奇心旺盛な学生AIです。教材について{n}個の質問を生成してください。 "
         f"レベル: {japanese_level}。 "
         "各質問を新しい行に書いてください。Q1:, Q2: のように始めてください。 "
-        "JSONやコードブロックは使わず、シンプルな質問文のみで回答してください。"
+        "JSONやコードブロックは使わず、シンプルな質問文のみで日本語で回答してください。"
     )
     # safetyやJSON指定は Gemini 側の機能に合わせて調整可
     resp = model.generate_content([sys, context])
@@ -157,7 +157,7 @@ def gemini_teacher_feedback(question: str, answer: str, context: str):
     model = genai.GenerativeModel(GEMINI_MODEL)
     sys = (
         "あなたは教育アシスタントです。先生の学生への説明を評価してください。 "
-        "以下のJSON形式でのみ回答してください: {\"score\":0-100,\"strengths\":[],\"suggestions\":[],\"model_answer\":\"...\"}。"
+        "以下のJSON形式でのみで日本語で回答してください: {\"score\":0-100,\"strengths\":[],\"suggestions\":[],\"model_answer\":\"...\"}。"
     )
     prompt = f"# 質問\n{question}\n\n# 先生の回答\n{answer}\n\n# 教材内容\n{context[:4000]}"
     resp = model.generate_content([sys, prompt])

@@ -56,7 +56,7 @@ export default function Teach() {
   };
 
   return (
-    <Guard>
+    <Guard showPreview={true}>
       <Container size="xl" p="xl">
         <Stack gap="xl">
           {/* Header Section */}

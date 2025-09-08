@@ -3,6 +3,8 @@ import { Button, FileInput, Group, Stack, Text, TextInput, Title, SegmentedContr
 import { IconUpload, IconLink, IconBrain, IconSettings, IconPlayerPlay } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
 import { useApi } from "../lib/api";
+import { useAuth0 } from "@auth0/auth0-react";
+import Guard from "../components/Guard";
 
 // ペルソナ定義
 const PERSONAS = {
@@ -38,6 +40,7 @@ const PERSONAS = {
 
 export default function Upload() {
   const api = useApi();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
   const [file, setFile] = useState<File | null>(null);
   const [url, setUrl] = useState("");
   const [materialId, setMaterialId] = useState<string | null>(null);
@@ -50,6 +53,10 @@ export default function Upload() {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handlePdf = async () => {
+    if (!isAuthenticated) {
+      loginWithRedirect();
+      return;
+    }
     if (!file) return;
     setIsUploadingPdf(true);
     try {
@@ -64,6 +71,10 @@ export default function Upload() {
   };
 
   const handleUrl = async () => {
+    if (!isAuthenticated) {
+      loginWithRedirect();
+      return;
+    }
     if (!url) return;
     setIsUploadingUrl(true);
     try {
@@ -78,6 +89,10 @@ export default function Upload() {
   };
 
   const handleGenerate = async () => {
+    if (!isAuthenticated) {
+      loginWithRedirect();
+      return;
+    }
     if (!materialId) return;
     setIsGenerating(true);
     try {
@@ -105,8 +120,9 @@ export default function Upload() {
   };
 
   return (
-    <Container size="lg" py="xl">
-      <Stack gap="xl">
+    <Guard showPreview={true}>
+      <Container size="lg" py="xl">
+        <Stack gap="xl">
         {/* Header Section */}
         <Card shadow="sm" padding="lg" radius="md" withBorder>
           <Group justify="space-between" align="center">
@@ -289,7 +305,8 @@ export default function Upload() {
             </Stack>
           </Card>
         )}
-      </Stack>
-    </Container>
+        </Stack>
+      </Container>
+    </Guard>
   );
 }

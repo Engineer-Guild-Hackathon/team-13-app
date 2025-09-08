@@ -10,13 +10,29 @@ import { Text, Title } from "@mantine/core";
 import { IconDashboard, IconUpload, IconSchool, IconHistory, IconHome, IconSettings, IconHelp, IconBookmark, IconStar, IconSun, IconMoon, IconLogout } from "@tabler/icons-react";
 import { useTheme } from "./contexts/ThemeContext";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect } from "react";
 
 
 export default function App() {
   const [opened, { toggle, close }] = useDisclosure();
   const { pathname } = useLocation();
   const { theme, toggleTheme } = useTheme();
-  const { logout } = useAuth0();
+  const { logout, isAuthenticated, user } = useAuth0();
+
+  // 認証状態の変化を監視してlocalStorageをクリア
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // 未認証時はlocalStorageから学習データをクリア
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.startsWith('questions:') || key.startsWith('persona:'))) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key));
+    }
+  }, [isAuthenticated]);
 
   const links = [
     { 
@@ -87,15 +103,17 @@ export default function App() {
             >
               {theme === 'light' ? <IconMoon size={16} /> : <IconSun size={16} />}
             </ActionIcon>
-            <ActionIcon
-              variant="light"
-              color="red"
-              onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
-              size="md"
-              aria-label="Logout"
-            >
-              <IconLogout size={16} />
-            </ActionIcon>
+            {isAuthenticated && (
+              <ActionIcon
+                variant="light"
+                color="red"
+                onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                size="md"
+                aria-label="Logout"
+              >
+                <IconLogout size={16} />
+              </ActionIcon>
+            )}
           </Group>
         </Group>
       </AppShell.Header>

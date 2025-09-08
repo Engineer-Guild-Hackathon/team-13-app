@@ -4,19 +4,26 @@ import { IconHistory, IconBook, IconPlayerPlay, IconCalendar } from "@tabler/ico
 import Guard from "../components/Guard";
 import { useApi } from "../lib/api";
 import { Link } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function History() {
   const api = useApi();
+  const { isAuthenticated, user } = useAuth0();
   const [sessions, setSessions] = useState<
     { session_id: string; material_id: string; material_title: string; level: string; questions: { id: string; question: string }[] }[]
   >([]);
 
   useEffect(() => {
-    api.history().then((d) => setSessions(d.sessions)).catch(() => setSessions([]));
-  }, []);
+    if (isAuthenticated) {
+      api.history().then((d) => setSessions(d.sessions)).catch(() => setSessions([]));
+    } else {
+      // 未認証時は履歴をクリア
+      setSessions([]);
+    }
+  }, [isAuthenticated, api]);
 
   return (
-    <Guard>
+    <Guard showPreview={true}>
       <Container size="lg" py="xl">
         <Stack gap="xl">
           {/* Header Section */}

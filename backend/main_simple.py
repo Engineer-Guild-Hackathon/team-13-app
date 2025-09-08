@@ -10,7 +10,7 @@ import os, json, time
 
 # --- Gemini ---
 import google.generativeai as genai
-genai.configure(api_key=os.getenv("GEMINI_API_KEY", "AIzaSyCGXvvzQBE99zqxOeTWxd9bxvvq6QI1IYk"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY", "AIzaSyDqfA1Jn7J6ijvs3gRGgh1ZSaGFNF_EqCM"))
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
 
 # --- FastAPI ---
@@ -104,8 +104,8 @@ def gemini_student_questions(context: str, level: str, n: int):
         return result
     except Exception as e:
         print(f"Gemini API error: {e}")
-        # フォールバック用の簡単な質問
-        return [{"id": f"q{i+1}", "question": f"この教材の内容について、{i+1}つ目の質問を教えてください。"} for i in range(n)]
+        # エラーを再発生させる
+        raise e
 
 def gemini_teacher_feedback(question: str, answer: str, context: str):
     try:
@@ -130,27 +130,42 @@ def gemini_teacher_feedback(question: str, answer: str, context: str):
         prompt = f"【学生の質問】\n{question}\n\n【先生の回答】\n{answer}\n\n【教材の内容】\n{context[:4000]}"
         resp = model.generate_content([sys, prompt])
         try:
-            return json.loads(resp.text)
-        except Exception:
-            return {"score": 70, "strengths": [], "suggestions": [resp.text[:500]], "model_answer": ""}
+            # JSONテキストをクリーンアップ
+            text = resp.text.strip()
+            # コードブロックを削除
+            if text.startswith('```json'):
+                text = text[7:]
+            if text.endswith('```'):
+                text = text[:-3]
+            text = text.strip()
+            
+            # JSONを解析
+            feedback_data = json.loads(text)
+            
+            # データの検証と正規化
+            return {
+                "score": int(feedback_data.get("score", 70)),
+                "strengths": feedback_data.get("strengths", []) if isinstance(feedback_data.get("strengths"), list) else [],
+                "suggestions": feedback_data.get("suggestions", []) if isinstance(feedback_data.get("suggestions"), list) else [],
+                "model_answer": str(feedback_data.get("model_answer", ""))
+            }
+        except Exception as e:
+            print(f"JSON parsing error: {e}")
+            print(f"Raw response: {resp.text[:200]}...")
+            return {
+                "score": 70, 
+                "strengths": [], 
+                "suggestions": [f"フィードバックの解析に失敗しました: {str(e)[:100]}"], 
+                "model_answer": ""
+            }
     except Exception as e:
         print(f"Gemini API error: {e}")
-        # フォールバック用の簡単なフィードバック
-        return {
-            "score": 75,
-            "strengths": ["質問に対して回答を提供していただき、ありがとうございます"],
-            "suggestions": ["より具体的な例を加えると、学生の理解が深まるでしょう", "専門用語の説明を追加することをお勧めします"],
-            "model_answer": "この質問に対する模範的な回答例を以下に示します。"
-        }
+        # エラーを再発生させる
+        raise e
 
 # --- データ保存用（簡易版） ---
-materials_storage = {
-    "test": {
-        "title": "テスト教材",
-        "content": "Reactは、ユーザーインターフェースを構築するためのJavaScriptライブラリです。コンポーネントベースのアーキテクチャを採用し、再利用可能なUIコンポーネントを作成できます。Reactは仮想DOMを使用して効率的なレンダリングを実現し、単方向データフローを採用しています。",
-        "type": "test"
-    }
-}
+materials_storage = {}
+sessions_storage = {}  # セッション管理用
 
 # --- エンドポイント ---
 
@@ -195,21 +210,62 @@ async def generate_questions(req: GenerateReq):
         
         # 実際の教材内容に基づいて質問生成
         questions = gemini_student_questions(context, req.level, req.num_questions)
-        return {"session_id": f"session_{int(time.time())}", "questions": questions}
+        
+        # セッション情報を保存
+        session_id = f"session_{int(time.time())}"
+        sessions_storage[session_id] = {
+            "material_id": req.material_id,
+            "material_title": material["title"],
+            "material_content": context,
+            "questions": questions,
+            "level": req.level,
+            "created_at": time.time()
+        }
+        
+        return {"session_id": session_id, "questions": questions}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Question generation error: {str(e)}")
 
 @app.post("/sessions/answer")
 async def submit_answer(req: AnswerReq):
     try:
-        feedback = gemini_teacher_feedback("Test question", req.answer_text, "Test context")
+        # セッション情報から質問と教材を取得
+        if req.session_id not in sessions_storage:
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        session = sessions_storage[req.session_id]
+        
+        # 質問IDから実際の質問を取得
+        question_text = "質問が見つかりません"
+        for q in session["questions"]:
+            if q["id"] == req.question_id:
+                question_text = q["question"]
+                break
+        
+        # 実際の教材内容を使用
+        material_content = session["material_content"]
+        
+        feedback = gemini_teacher_feedback(question_text, req.answer_text, material_content)
         return {"feedback": feedback}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Answer processing error: {str(e)}")
 
 @app.get("/history")
 async def history():
-    return {"sessions": []}
+    # セッション情報を返す（簡易版）
+    sessions = []
+    for session_id, session_data in sessions_storage.items():
+        sessions.append({
+            "session_id": session_id,
+            "material_title": session_data["material_title"],
+            "level": session_data["level"],
+            "questions_count": len(session_data["questions"]),
+            "created_at": session_data["created_at"]
+        })
+    
+    # 作成日時でソート（新しい順）
+    sessions.sort(key=lambda x: x["created_at"], reverse=True)
+    return {"sessions": sessions}
 
 @app.get("/health")
 async def health():

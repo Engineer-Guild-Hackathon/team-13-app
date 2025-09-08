@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Card, Group, Stack, Text, Textarea, Title, Badge } from "@mantine/core";
+import { Button, Card, Group, Stack, Text, Textarea, Title, Badge, Paper } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import Guard from "../components/Guard";
 import { useApi } from "../lib/api";
@@ -79,27 +79,54 @@ export default function Teach() {
 
             {feedback && (
               <Card withBorder>
-                <Group justify="space-between">
-                  <Title order={4}>フィードバック</Title>
-                  <Badge color="green">Score: {feedback.score}</Badge>
+                <Group justify="space-between" mb="md">
+                  <Title order={4}>AI フィードバック</Title>
+                  <Badge 
+                    color={
+                      feedback.score >= 80 ? "green" : 
+                      feedback.score >= 60 ? "yellow" : 
+                      feedback.score >= 40 ? "orange" : "red"
+                    }
+                    size="lg"
+                  >
+                    Score: {feedback.score}/100
+                  </Badge>
                 </Group>
+
                 {feedback.strengths?.length > 0 && (
-                  <>
-                    <Text fw={600} mt="xs">良い点</Text>
-                    <ul>{feedback.strengths.map((s, i) => <li key={i}>{s}</li>)}</ul>
-                  </>
+                  <Stack gap="sm" mb="md">
+                    <Text fw={600} c="green" size="lg">✅ 良い点</Text>
+                    <Stack gap="xs" pl="md">
+                      {feedback.strengths.map((strength, i) => (
+                        <Text key={i} size="sm" c="gray.2">
+                          • {strength}
+                        </Text>
+                      ))}
+                    </Stack>
+                  </Stack>
                 )}
+
                 {feedback.suggestions?.length > 0 && (
-                  <>
-                    <Text fw={600} mt="xs">改善提案</Text>
-                    <ul>{feedback.suggestions.map((s, i) => <li key={i}>{s}</li>)}</ul>
-                  </>
+                  <Stack gap="sm" mb="md">
+                    <Text fw={600} c="blue" size="lg">改善提案</Text>
+                    <Stack gap="xs" pl="md">
+                      {feedback.suggestions.map((suggestion, i) => (
+                        <Text key={i} size="sm" c="gray.2">
+                          • {suggestion}
+                        </Text>
+                      ))}
+                    </Stack>
+                  </Stack>
                 )}
+
                 {feedback.model_answer && (
-                  <>
-                    <Text fw={600} mt="xs">模範解答</Text>
-                    <Text>{feedback.model_answer}</Text>
-                  </>
+                  <Stack gap="sm">
+                    <Text fw={600} c="violet" size="lg">模範解答</Text>
+                     <Paper p="md" withBorder radius="md" bg="blue.9">
+                      <Text size="sm" c="blue.1">{feedback.model_answer}</Text>
+                    </Paper>
+
+                  </Stack>
                 )}
               </Card>
             )}

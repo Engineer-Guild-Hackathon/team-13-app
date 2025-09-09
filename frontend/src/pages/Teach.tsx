@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Button, Card, Group, Stack, Text, Textarea, Title, Badge, Paper, Loader, Center, Alert, Container, Grid, ThemeIcon, Divider, Progress } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import Guard from "../components/Guard";
+import VoiceInput from "../components/VoiceInput";
 import { useApi } from "../lib/api";
 import { IconMessageCircle, IconSend, IconCheck, IconX, IconStar } from "@tabler/icons-react";
 
@@ -90,6 +91,16 @@ export default function Teach() {
   }, [answer, sessionId]);
 
   const canSubmit = useMemo(() => !!(sessionId && selected && answer.trim().length > 0), [sessionId, selected, answer]);
+
+  // 音声入力のハンドラー
+  const handleVoiceTranscript = (transcript: string) => {
+    setAnswer(prev => prev + (prev ? ' ' : '') + transcript);
+    notifications.show({ 
+      color: "green", 
+      message: "音声が文字に変換されました",
+      autoClose: 2000
+    });
+  };
 
   const submit = async () => {
     if (!sessionId || !selected) return;
@@ -274,6 +285,13 @@ export default function Teach() {
                         }}
                       />
                       
+                      {/* 音声入力コンポーネント */}
+                      <VoiceInput 
+                        onTranscript={handleVoiceTranscript}
+                        disabled={isLoading}
+                        placeholder="音声で回答を入力..."
+                      />
+                      
                       {/* Character count and tips */}
                       <Group justify="space-between" align="center">
                         <Text size="xs" c="dimmed">
@@ -380,7 +398,7 @@ export default function Teach() {
                               <Stack gap="xs">
                                 <Group gap="xs">
                                   <IconCheck size={16} color="var(--mantine-color-green-6)" />
-                                  <Text fw={600} c="green" size="sm">✅ 良い点</Text>
+                                  <Text fw={600} c="green" size="sm">良い点</Text>
                                 </Group>
                                 <Stack gap="xs">
                                   {feedback.strengths.slice(0, 2).map((strength, i) => (

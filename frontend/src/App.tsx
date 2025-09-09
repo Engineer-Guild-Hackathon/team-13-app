@@ -89,7 +89,7 @@ export default function App() {
           
             <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
             <Group gap="xs" align="center">
-            <Image src="logo.png" w={32} h={32} radius="sm" />
+            <Image src="/logo.png" w={32} h={32} radius="sm" />
             <Text
             size="5xl"
             fw={1600}

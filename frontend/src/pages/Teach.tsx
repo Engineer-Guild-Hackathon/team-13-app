@@ -349,7 +349,7 @@ export default function Teach() {
                           <ThemeIcon size="lg" radius="xl" variant="gradient" gradient={{ from: 'orange', to: 'red' }}>
                             <IconStar size={20} />
                           </ThemeIcon>
-                          <Title order={3}>🤖 AI フィードバック</Title>
+                          <Title order={3}>AI フィードバック</Title>
                         </Group>
                         <Stack align="center" gap="xs">
                           <Badge 

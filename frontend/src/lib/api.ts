@@ -87,12 +87,13 @@ export function useApi() {
       const { data } = await client.post("/upload/url", { url, title });
       return data as { material_id: string; chars: number };
     },
-    generateQuestions: async (material_id: string, level: string, persona: string, num = 5) => {
+    generateQuestions: async (material_id: string, level: string, persona: string, num = 5, instructions?: string) => {
       const { data } = await client.post("/materials/generate-questions", {
         material_id,
         level,
         persona,
-        num_questions: num
+        num_questions: num,
+        instructions: instructions || ""
       });
       return data as {
         session_id: string;
@@ -125,6 +126,14 @@ export function useApi() {
           questions: { id: string; question: string }[];
         }[];
       };
+    },
+    deleteSession: async (sessionId: string) => {
+      const { data } = await client.delete(`/sessions/${sessionId}`);
+      return data as { message: string };
+    },
+    clearHistory: async () => {
+      const { data } = await client.delete("/history");
+      return data as { message: string };
     }
   };
 }

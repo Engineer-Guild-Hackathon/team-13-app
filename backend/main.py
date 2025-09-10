@@ -86,6 +86,7 @@ class GenerateReq(BaseModel):
     level: str = "beginner"  # beginner | intermediate | advanced
     persona: str = "curious"  # curious | practical | analytical | custom
     num_questions: int = 5
+    instructions: str = ""
 
 class AnswerReq(BaseModel):
     session_id: str
@@ -114,56 +115,71 @@ def extract_text_from_url(url: str) -> str:
     text = " ".join(soup.get_text(separator=" ").split())
     return text
 
-def gemini_student_questions(context: str, level: str, persona: str, n: int):
+def gemini_student_questions(context: str, level: str, persona: str, n: int, instructions: str = ""):
     try:
         model = genai.GenerativeModel(GEMINI_MODEL)
-    # レベルを日本語に変換
-    level_map = {
-        "beginner": "初級",
-        "intermediate": "中級", 
-        "advanced": "上級"
-    }
-    japanese_level = level_map.get(level, level)
-    
-    # ペルソナに応じた学生の性格を設定
-    persona_descriptions = {
-        "curious": "好奇心旺盛で、常に「なぜ？」「どうして？」と質問し、深く理解したいタイプの学生",
-        "practical": "実践重視で、実際の応用や具体例を重視し、実用的な知識を求めるタイプの学生",
-        "analytical": "論理的な思考を好み、体系的に理解したいタイプの学生",
-        "custom": "ユーザーが指定した性格・特徴を持つ学生"
-    }
-    
-    student_persona = persona_descriptions.get(persona, persona_descriptions["curious"])
-    
-    sys = (
-        f"あなたは{student_persona}です。教材について{n}個の質問を生成してください。 "
-        f"レベル: {japanese_level}。 "
-        "あなたの性格に合った質問をしてください。各質問を新しい行に書いてください。Q1:, Q2: のように始めてください。 "
-        "JSONやコードブロックは使わず、シンプルな質問文のみで日本語で回答してください。"
-    )
-    # safetyやJSON指定は Gemini 側の機能に合わせて調整可
-    resp = model.generate_content([sys, context])
-    text = resp.text.strip()
-    # テキストから質問を抽出
-    lines = text.splitlines()
-    questions = []
-    for line in lines:
-        line = line.strip()
-        if line and not line.startswith('```') and not line.startswith('{') and not line.startswith('['):
-            # Q1:, Q2: などのプレフィックスを削除
-            if ':' in line:
-                question = line.split(':', 1)[1].strip()
-            else:
-                question = line
-            if question:
-                questions.append(question)
+        # レベルを日本語に変換
+        level_map = {
+            "beginner": "初級",
+            "intermediate": "中級", 
+            "advanced": "上級"
+        }
+        japanese_level = level_map.get(level, level)
+        
+        # ペルソナに応じた学生の性格を設定
+        persona_descriptions = {
+            "curious": "好奇心旺盛で、常に「なぜ？」「どうして？」と質問し、深く理解したいタイプの学生",
+            "practical": "実践重視で、実際の応用や具体例を重視し、実用的な知識を求めるタイプの学生",
+            "analytical": "論理的な思考を好み、体系的に理解したいタイプの学生",
+            "custom": "ユーザーが指定した性格・特徴を持つ学生"
+        }
+        
+        student_persona = persona_descriptions.get(persona, persona_descriptions["curious"])
+        
+        # 基本プロンプト
+        base_prompt = (
+            f"あなたは{student_persona}です。教材について{n}個の質問を生成してください。 "
+            f"レベル: {japanese_level}。 "
+            "あなたの性格に合った質問をしてください。"
+        )
+        
+        # 詳細指示がある場合は追加
+        if instructions and instructions.strip():
+            print(f"📝 詳細指示が指定されました: {instructions[:100]}...")
+            base_prompt += f"\n\n特別な指示：\n{instructions.strip()}\n"
+        else:
+            print("📝 詳細指示は指定されていません")
+        
+        # 回答形式の指示
+        base_prompt += (
+            "\n各質問を新しい行に書いてください。Q1:, Q2: のように始めてください。 "
+            "JSONやコードブロックは使わず、シンプルな質問文のみで日本語で回答してください。"
+        )
+        
+        sys = base_prompt
+        # safetyやJSON指定は Gemini 側の機能に合わせて調整可
+        resp = model.generate_content([sys, context])
+        text = resp.text.strip()
+        # テキストから質問を抽出
+        lines = text.splitlines()
+        questions = []
+        for line in lines:
+            line = line.strip()
+            if line and not line.startswith('```') and not line.startswith('{') and not line.startswith('['):
+                # Q1:, Q2: などのプレフィックスを削除
+                if ':' in line:
+                    question = line.split(':', 1)[1].strip()
+                else:
+                    question = line
+                if question:
+                    questions.append(question)
 
-    # 指定された数の質問を返す
-    result = []
-    for i, q in enumerate(questions[:n]):
-        result.append({"id": f"q{i+1}", "question": q})
-    
-    return result
+        # 指定された数の質問を返す
+        result = []
+        for i, q in enumerate(questions[:n]):
+            result.append({"id": f"q{i+1}", "question": q})
+        
+        return result
     except Exception as e:
         print(f"Gemini API error in gemini_student_questions: {e}")
         # Gemini APIエラーの場合のフォールバック
@@ -172,16 +188,16 @@ def gemini_student_questions(context: str, level: str, persona: str, n: int):
 def gemini_teacher_feedback(question: str, answer: str, context: str):
     try:
         model = genai.GenerativeModel(GEMINI_MODEL)
-    sys = (
-        "あなたは教育アシスタントです。先生の学生への説明を評価してください。 "
-        "以下のJSON形式でのみで日本語で回答してください: {\"score\":0-100,\"strengths\":[],\"suggestions\":[],\"model_answer\":\"...\"}。"
-    )
-    prompt = f"# 質問\n{question}\n\n# 先生の回答\n{answer}\n\n# 教材内容\n{context[:4000]}"
-    resp = model.generate_content([sys, prompt])
-    try:
-        return json.loads(resp.text)
-    except Exception:
-        return {"score": 70, "strengths": [], "suggestions": [resp.text[:500]], "model_answer": ""}
+        sys = (
+            "あなたは教育アシスタントです。先生の学生への説明を評価してください。 "
+            "以下のJSON形式でのみで日本語で回答してください: {\"score\":0-100,\"strengths\":[],\"suggestions\":[],\"model_answer\":\"...\"}。"
+        )
+        prompt = f"# 質問\n{question}\n\n# 先生の回答\n{answer}\n\n# 教材内容\n{context[:4000]}"
+        resp = model.generate_content([sys, prompt])
+        try:
+            return json.loads(resp.text)
+        except Exception:
+            return {"score": 70, "strengths": [], "suggestions": [resp.text[:500]], "model_answer": ""}
     except Exception as e:
         print(f"Gemini API error in gemini_teacher_feedback: {e}")
         # Gemini APIエラーの場合のフォールバック
@@ -228,13 +244,14 @@ async def generate_questions(req: GenerateReq, user=Depends(verify_jwt)):
     if not mat.exists or mat.to_dict().get("owner") != user["sub"]:
         raise HTTPException(404, "material not found")
     context = mat.to_dict()["content"]
-    questions = gemini_student_questions(context, req.level, req.persona, req.num_questions)
+    questions = gemini_student_questions(context, req.level, req.persona, req.num_questions, req.instructions)
     sess = db.collection("sessions").document()
     sess.set({
         "owner": user["sub"],
         "material_id": req.material_id,
         "level": req.level,
         "persona": req.persona,
+        "instructions": req.instructions,
         "questions": questions,
         "createdAt": firestore.SERVER_TIMESTAMP
     })
@@ -268,3 +285,25 @@ async def history(user=Depends(verify_jwt)):
         d = doc.to_dict()
         out.append({"session_id": doc.id, "material_id": d["material_id"], "level": d["level"], "questions": d.get("questions", [])})
     return {"sessions": out}
+
+@app.delete("/sessions/{session_id}")
+async def delete_session(session_id: str, user=Depends(verify_jwt)):
+    sess_ref = db.collection("sessions").document(session_id)
+    sess = sess_ref.get()
+    if not sess.exists or sess.to_dict().get("owner") != user["sub"]:
+        raise HTTPException(404, "session not found")
+    
+    # セッションとその関連データを削除
+    sess_ref.delete()
+    return {"message": "Session deleted successfully"}
+
+@app.delete("/history")
+async def clear_history(user=Depends(verify_jwt)):
+    # ユーザーの全セッションを削除
+    q = db.collection("sessions").where("owner", "==", user["sub"]).stream()
+    deleted_count = 0
+    for doc in q:
+        doc.reference.delete()
+        deleted_count += 1
+    
+    return {"message": f"Cleared {deleted_count} sessions"}
